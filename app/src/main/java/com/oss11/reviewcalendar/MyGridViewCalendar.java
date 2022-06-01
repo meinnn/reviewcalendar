@@ -1,5 +1,6 @@
 package com.oss11.reviewcalendar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +21,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 public class MyGridViewCalendar extends Fragment {
-
     private TextView tvCalendarTitle;
     private GridView gvCalendar;
 
@@ -63,6 +63,7 @@ public class MyGridViewCalendar extends Fragment {
                 mThisMonthCalendar.add(Calendar.MONTH, +1);
 
                 getCalendar(mThisMonthCalendar.getTime());
+
             }
         });
 
@@ -74,11 +75,15 @@ public class MyGridViewCalendar extends Fragment {
                 mCalendarAdapter.notifyDataSetChanged();
 
                 SelectPhoto selectPhoto = new SelectPhoto();
+
+                Bundle bundle=new Bundle();
+                bundle.putString("selectedDate",mCalendarAdapter.selectedDate.toString());
+                selectPhoto.setArguments(bundle);
+
                 selectPhoto.show(getActivity().getSupportFragmentManager(), "select_photo");
 
             }
         });
-
 
         arrayListDayInfo = new ArrayList<>();
 

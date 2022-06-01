@@ -2,6 +2,10 @@ package com.oss11.reviewcalendar;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -13,14 +17,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 
-
 public class SelectPhoto extends DialogFragment {
+    private static final int REQUEST_CODE = 0;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -35,13 +48,27 @@ public class SelectPhoto extends DialogFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TextView searchText = dialog.findViewById(R.id.searchText);
+                String keyword = searchText.getText().toString();
 
+                Intent intentS = new Intent(getActivity(), SearchForm.class);
+                intentS.putExtra("keyword", keyword);
+                startActivity(intentS);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent2 = new Intent(getActivity(), write_review.class);
+                intent2.putExtra("selectedDate",bundle.getString("selectedDate"));
+                startActivity(intent2);
 
+                /*
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, REQUEST_CODE);
+                 */
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {

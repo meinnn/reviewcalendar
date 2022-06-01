@@ -17,6 +17,7 @@ public class CalendarAdapter extends BaseAdapter {
     public Date selectedDate;
     public Date dateToday;
 
+
     public CalendarAdapter(ArrayList<com.oss11.reviewcalendar.DayInfo> arrayLIstDayInfo, Date date) {
         this.arrayListDayInfo = arrayLIstDayInfo;
         this.selectedDate = date;
