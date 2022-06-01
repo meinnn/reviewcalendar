@@ -50,7 +50,7 @@ public class write_review extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         intent = getIntent();
-        sub_date=intent.getExtras().getString("selectedDate");//selected photo 프래그먼트의 키값을 받아옴
+        sub_date=intent.getExtras().getString("selectedDate");
         setContentView(R.layout.review);
         EditText_title=(EditText)findViewById(R.id.editText);
         EditText_date=(EditText)findViewById(R.id.editText2);
@@ -58,9 +58,7 @@ public class write_review extends AppCompatActivity{
         EditText_with=(EditText)findViewById(R.id.editText4);
         EditText_review=(EditText)findViewById(R.id.editText5);
         saveButton=(Button) findViewById(R.id.button5);
-        date=sub_date.substring(0,10);// 해당 키 값의 월일 값만 잘라냄
-
-
+        date=sub_date.substring(0,10);
         imageView = findViewById(R.id.imageView3);
         storage=FirebaseStorage.getInstance();
         storage.getReference().child(date).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -68,7 +66,7 @@ public class write_review extends AppCompatActivity{
             public void onSuccess(Uri uri) {
                 Glide.with(write_review.this).load(uri).into(imageView);
             }
-        });//이미지 뷰 클릭 시 스토리지에 저장된 이미지를 불러옴
+        });
 
 
         imageView.setOnClickListener(new View.OnClickListener(){
@@ -82,7 +80,6 @@ public class write_review extends AppCompatActivity{
         });
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -90,19 +87,17 @@ public class write_review extends AppCompatActivity{
             if (resultCode == RESULT_OK) {
                 Uri file = data.getData();
                 StorageReference storageRef = storage.getReference();
-                UploadTask uploadTask = storageRef.child(date).putFile(file);//스토리지에 파일 저장
+                UploadTask uploadTask = storageRef.child(date).putFile(file);
                 try {
                     InputStream in = getContentResolver().openInputStream(data.getData());
-
                     Bitmap img = BitmapFactory.decodeStream(in);
                     in.close();
-
                     imageView.setImageBitmap(img);
-                } catch (Exception e) {
-
                 }
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "취소", Toast.LENGTH_LONG).show();
+                catch (Exception e) {
+                }
+            }
+            else if (resultCode == RESULT_CANCELED) {
             }
         }
     }
@@ -112,7 +107,7 @@ public class write_review extends AppCompatActivity{
         super.onStart();
 
 
-        mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {//date 값의 테이블에 저장된 데이터를 불러옴
+        mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String text = dataSnapshot.getValue(String.class);
@@ -174,7 +169,7 @@ public class write_review extends AppCompatActivity{
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {//수정 버튼을 누를 시 파이어베이스에 저장
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ReviewDTO reviewDTO=new ReviewDTO(EditText_title.getText().toString(), date

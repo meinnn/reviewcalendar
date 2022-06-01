@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "632743073532",
+    "project_id": "reviewcalendar-9dfac",
+    "storage_bucket": "reviewcalendar-9dfac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:632743073532:android:cd43e1e93b4faae0b32979",
+        "android_client_info": {
+          "package_name": "com.oss11.reviewcalendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "632743073532-a9insm4tl24jiev9d2dajrvl18rc7sni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9iT382mRNRY4Pi1g2gTPQ9IL4Na5LT78"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "632743073532-a9insm4tl24jiev9d2dajrvl18rc7sni.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

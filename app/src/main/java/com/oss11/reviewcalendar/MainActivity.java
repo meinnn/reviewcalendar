@@ -5,6 +5,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -12,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     MyGridViewCalendar myGridViewCalendar;
     Date selectedDate;
     TextView tvSelectedDate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
