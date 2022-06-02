@@ -50,7 +50,7 @@ public class write_review extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         intent = getIntent();
-        sub_date=intent.getExtras().getString("selectedDate");
+        sub_date=intent.getExtras().getString("selectedDate");//selected photo 프래그먼트의 selectedDate 키값을 받아옴 (사용자가 클릭한 달력의 월일)
         setContentView(R.layout.review);
         EditText_title=(EditText)findViewById(R.id.editText);
         EditText_date=(EditText)findViewById(R.id.editText2);
@@ -58,7 +58,7 @@ public class write_review extends AppCompatActivity{
         EditText_with=(EditText)findViewById(R.id.editText4);
         EditText_review=(EditText)findViewById(R.id.editText5);
         saveButton=(Button) findViewById(R.id.button5);
-        date=sub_date.substring(0,10);
+        date=sub_date.substring(0,10);//해당 키 값의 월일까지만 잘라내서 테이블값으로 사용 
 
 
         imageView = findViewById(R.id.imageView3);
@@ -68,7 +68,7 @@ public class write_review extends AppCompatActivity{
             public void onSuccess(Uri uri) {
                 Glide.with(write_review.this).load(uri).into(imageView);
             }
-        });
+        });//이미지 뷰 클릭 시 스토리지에 저장된 이미지를 불러옴
 
 
         imageView.setOnClickListener(new View.OnClickListener(){
@@ -90,7 +90,7 @@ public class write_review extends AppCompatActivity{
             if (resultCode == RESULT_OK) {
                 Uri file = data.getData();
                 StorageReference storageRef = storage.getReference();
-                UploadTask uploadTask = storageRef.child(date).putFile(file);
+                UploadTask uploadTask = storageRef.child(date).putFile(file);//스토리지에 파일 저장
                 try {
                     InputStream in = getContentResolver().openInputStream(data.getData());
 
@@ -109,8 +109,9 @@ public class write_review extends AppCompatActivity{
 
     @Override
     protected void onStart() {
-        super.onStart();
-
+        super.onStart();// date 값이 사용자가 클릭한 날짜값이므로 각각의 날짜를 제목으로 하는 테이블 생성,
+                        // 그 후 테이블 안의 키값인 title, date, place, with, review에 
+            
 
         mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
             @Override
@@ -174,7 +175,7 @@ public class write_review extends AppCompatActivity{
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        saveButton.setOnClickListener(new View.OnClickListener() {// 수정 버튼을 누를 시 파이어베이스의 각 키 값에 정보가 저장됨
             @Override
             public void onClick(View v) {
                 ReviewDTO reviewDTO=new ReviewDTO(EditText_title.getText().toString(), date
