@@ -38,7 +38,7 @@ public class SelectPhoto extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), write_review.class);
-                intent.putExtra("selectedDate",bundle.getString("selectedDate"));
+                intent.putExtra("selectedDate",bundle.getString("selectedDate"));//MyGridCalendar의 selectedDate 값을 넘겨받은 후에 다시 write_review로 값 전달
                 startActivity(intent);
             }
         });
