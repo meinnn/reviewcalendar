@@ -1,7 +1,7 @@
 package com.oss11.reviewcalendar;
 
 
-public class ReviewDTO{
+public class ReviewDTO{//파이어베이스 저장할 때 테이블 형식으로 만들기 위한 디투어
 
     public String title;
     public String date;
