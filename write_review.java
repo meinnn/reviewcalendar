@@ -110,7 +110,7 @@ public class write_review extends AppCompatActivity{
     @Override
     protected void onStart() {
         super.onStart();// date 값이 사용자가 클릭한 날짜값이므로 각각의 날짜를 제목으로 하는 테이블 생성,
-                        // 그 후 테이블 안의 키값인 title, date, place, with, review에 
+                        // 그 후 테이블 안의 키값인 title, date, place, with, review에 입력한  저장
             
 
         mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
@@ -175,7 +175,7 @@ public class write_review extends AppCompatActivity{
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {// 수정 버튼을 누를 시 파이어베이스의 각 키 값에 정보가 저장됨
+        saveButton.setOnClickListener(new View.OnClickListener() {// 수정 버튼을 누를 시 파이어베이스의 각 키 값에 데이터가 저장됨
             @Override
             public void onClick(View v) {
                 ReviewDTO reviewDTO=new ReviewDTO(EditText_title.getText().toString(), date
