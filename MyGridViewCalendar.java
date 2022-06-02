@@ -76,8 +76,8 @@ public class MyGridViewCalendar extends Fragment {
 
                 SelectPhoto selectPhoto = new SelectPhoto();
 
-                Bundle bundle=new Bundle();
-                bundle.putString("selectedDate",mCalendarAdapter.selectedDate.toString());
+                Bundle bundle=new Bundle();// 번들값으로 
+                bundle.putString("selectedDate",mCalendarAdapter.selectedDate.toString());//selectPhoto 프래그먼트로 selectedDate 값을 넘김
                 selectPhoto.setArguments(bundle);
 
                 selectPhoto.show(getActivity().getSupportFragmentManager(), "select_photo");
