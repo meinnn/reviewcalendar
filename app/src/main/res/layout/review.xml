@@ -48,8 +48,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageView
@@ -143,10 +142,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_weight="1"
         android:background="@drawable/border_drawable"
         android:orientation="vertical">
 
@@ -163,10 +161,11 @@
             android:id="@+id/ratingbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:isIndicator="false"
             android:numStars="5"
             android:rating="3"
             android:stepSize="0.5"
-            android:isIndicator="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -174,9 +173,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_weight="1.5"
+        android:layout_weight="1"
         android:background="@drawable/border_drawable"
         android:orientation="vertical"
         android:padding="10dp">
