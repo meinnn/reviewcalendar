@@ -28,7 +28,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.InputStream;
 import java.util.Date;
 
-public class write_review extends AppCompatActivity{
+public class write_review extends AppCompatActivity{//               리뷰창에 데이터 입력 시 파이어베이스로 저장 및 파이어베이스에서 데이터를 불러오는 모듈
 
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private static final int REQUEST_CODE = 0;
