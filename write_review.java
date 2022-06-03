@@ -42,7 +42,8 @@ public class write_review extends AppCompatActivity{//               리뷰창�
     EditText EditText_review;
     Button saveButton;
     String date, sub_date;
-
+    RatingBar ratingbar;
+    float rate;
 
     Intent intent;
 
@@ -58,6 +59,7 @@ public class write_review extends AppCompatActivity{//               리뷰창�
         EditText_with=(EditText)findViewById(R.id.editText4);
         EditText_review=(EditText)findViewById(R.id.editText5);
         saveButton=(Button) findViewById(R.id.button5);
+        ratingbar=(RatingBar)findViewById(R.id.ratingbar);
         date=sub_date.substring(0,10);//해당 키 값의 월일까지만 잘라내서 테이블값으로 사용 
 
 
@@ -110,14 +112,24 @@ public class write_review extends AppCompatActivity{//               리뷰창�
     @Override
     protected void onStart() {
         super.onStart();// date 값이 사용자가 클릭한 날짜값이므로 각각의 날짜를 제목으로 하는 테이블 생성,
-                        // 그 후 테이블 안의 키값인 title, date, place, with, review에 입력한  저장
+                        // 그 후 테이블 안의 키값인 title, date, place, with, review에 입력한 값 저장
             
 
-        mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
+        EditText_date.setText(date);
+        
+        ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {//별점 클릭시 해당 값 파이어베이스에 저장
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean b) {
+                mRootRef.child(date).child("rating").setValue(rating);
+                rate=rating;
+            }
+        });
+        
+        mRootRef.child(date).child("rating").addValueEventListener(new ValueEventListener() {//파이어베이스에 저장된 별점 값 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                EditText_title.setText(text);
+                float rating=dataSnapshot.getValue(float.class);
+                ratingbar.setRating(rating);
             }
 
             @Override
@@ -125,11 +137,12 @@ public class write_review extends AppCompatActivity{//               리뷰창�
 
             }
         });
-        mRootRef.child(date).child("date").addValueEventListener(new ValueEventListener() {
+        
+        mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String text = dataSnapshot.getValue(String.class);
-                EditText_date.setText(text);
+                EditText_title.setText(text);
             }
 
             @Override
@@ -179,7 +192,7 @@ public class write_review extends AppCompatActivity{//               리뷰창�
             @Override
             public void onClick(View v) {
                 ReviewDTO reviewDTO=new ReviewDTO(EditText_title.getText().toString(), date
-                ,EditText_place.getText().toString(), EditText_with.getText().toString(),EditText_review.getText().toString());
+                ,EditText_place.getText().toString(), EditText_with.getText().toString(),EditText_review.getText().toString(),rate);
 
 
                 mRootRef.child(date).setValue(reviewDTO);
