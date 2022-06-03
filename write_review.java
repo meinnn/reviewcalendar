@@ -61,6 +61,8 @@ public class write_review extends AppCompatActivity{//               리뷰창�
         saveButton=(Button) findViewById(R.id.button5);
         ratingbar=(RatingBar)findViewById(R.id.ratingbar);
         date=sub_date.substring(0,10);//해당 키 값의 월일까지만 잘라내서 테이블값으로 사용 
+        
+        deleteButton=(Button)findViewById(R.id.button4) ;
 
 
         imageView = findViewById(R.id.imageView3);
@@ -198,6 +200,19 @@ public class write_review extends AppCompatActivity{//               리뷰창�
                 mRootRef.child(date).setValue(reviewDTO);
             }
         });
+        
+        
+        deleteButton.setOnClickListener(new View.OnClickListener() {//삭제 버튼
+            @Override
+            public void onClick(View view) {
+                EditText_review.setText("");
+                EditText_with.setText("");
+                EditText_place.setText("");
+                EditText_title.setText("");
+            }
+        });
+        
+        
     }
 
 }
