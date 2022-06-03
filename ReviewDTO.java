@@ -8,14 +8,16 @@ public class ReviewDTO{//파이어베이스 저장할 때 테이블 형식으로
     public String place;
     public String with;
     public String review;
+    public float rating;
 
     public ReviewDTO(){}
 
-    public ReviewDTO(String title,String date,String place,String with,String review){
+    public ReviewDTO(String title,String date,String place,String with,String review,float rating){
         this.title=title;
         this.date=date;
         this.place=place;
         this.with=with;
         this.review=review;
+        this.rating=rating;
     }
 }
