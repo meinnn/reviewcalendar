@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -28,7 +29,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.InputStream;
 import java.util.Date;
 
-public class write_review extends AppCompatActivity{//               리뷰창에 데이터 입력 시 파이어베이스로 저장 및 파이어베이스에서 데이터를 불러오는 모듈
+public class write_review extends AppCompatActivity{
 
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private static final int REQUEST_CODE = 0;
@@ -44,6 +45,8 @@ public class write_review extends AppCompatActivity{//               리뷰창�
     String date, sub_date;
     RatingBar ratingbar;
     float rate;
+    Button deleteButton;
+    Button Backspace;
 
     Intent intent;
 
@@ -51,7 +54,7 @@ public class write_review extends AppCompatActivity{//               리뷰창�
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         intent = getIntent();
-        sub_date=intent.getExtras().getString("selectedDate");//selected photo 프래그먼트의 selectedDate 키값을 받아옴 (사용자가 클릭한 달력의 월일)
+        sub_date=intent.getExtras().getString("selectedDate");//selected photo 프래그먼트의 키값을 받아옴
         setContentView(R.layout.review);
         EditText_title=(EditText)findViewById(R.id.editText);
         EditText_date=(EditText)findViewById(R.id.editText2);
@@ -60,10 +63,9 @@ public class write_review extends AppCompatActivity{//               리뷰창�
         EditText_review=(EditText)findViewById(R.id.editText5);
         saveButton=(Button) findViewById(R.id.button5);
         ratingbar=(RatingBar)findViewById(R.id.ratingbar);
-        date=sub_date.substring(0,10);//해당 키 값의 월일까지만 잘라내서 테이블값으로 사용 
-        
+        date=sub_date.substring(0,10);// 해당 키 값의 월일 값만 잘라냄
         deleteButton=(Button)findViewById(R.id.button4) ;
-
+        Backspace=(Button)findViewById(R.id.BackSpace);
 
         imageView = findViewById(R.id.imageView3);
         storage=FirebaseStorage.getInstance();
@@ -84,6 +86,7 @@ public class write_review extends AppCompatActivity{//               리뷰창�
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
+
     }
 
 
@@ -113,21 +116,26 @@ public class write_review extends AppCompatActivity{//               리뷰창�
 
     @Override
     protected void onStart() {
-        super.onStart();// date 값이 사용자가 클릭한 날짜값이므로 각각의 날짜를 제목으로 하는 테이블 생성,
-                        // 그 후 테이블 안의 키값인 title, date, place, with, review에 입력한 값 저장
-            
-
+        super.onStart();
         EditText_date.setText(date);
-        
-        ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {//별점 클릭시 해당 값 파이어베이스에 저장
+
+        Backspace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean b) {
                 mRootRef.child(date).child("rating").setValue(rating);
                 rate=rating;
             }
         });
-        
-        mRootRef.child(date).child("rating").addValueEventListener(new ValueEventListener() {//파이어베이스에 저장된 별점 값 
+
+
+        mRootRef.child(date).child("rating").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 float rating=dataSnapshot.getValue(float.class);
@@ -139,8 +147,8 @@ public class write_review extends AppCompatActivity{//               리뷰창�
 
             }
         });
-        
-        mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
+
+        mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {//date 값의 테이블에 저장된 데이터를 불러옴
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String text = dataSnapshot.getValue(String.class);
@@ -190,7 +198,7 @@ public class write_review extends AppCompatActivity{//               리뷰창�
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {// 수정 버튼을 누를 시 파이어베이스의 각 키 값에 데이터가 저장됨
+        saveButton.setOnClickListener(new View.OnClickListener() {//수정 버튼을 누를 시 파이어베이스에 저장
             @Override
             public void onClick(View v) {
                 ReviewDTO reviewDTO=new ReviewDTO(EditText_title.getText().toString(), date
@@ -200,8 +208,7 @@ public class write_review extends AppCompatActivity{//               리뷰창�
                 mRootRef.child(date).setValue(reviewDTO);
             }
         });
-        
-        
+
         deleteButton.setOnClickListener(new View.OnClickListener() {//삭제 버튼
             @Override
             public void onClick(View view) {
@@ -211,8 +218,9 @@ public class write_review extends AppCompatActivity{//               리뷰창�
                 EditText_title.setText("");
             }
         });
-        
-        
+
+
     }
+
 
 }
