@@ -13,6 +13,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -60,36 +65,52 @@ public class CalendarAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.day, parent, false);
         }
 
-        if(day != null){
+        if(day != null) {
             TextView tvDay = convertView.findViewById(R.id.day_cell_tv_day);
             tvDay.setText(day.getDay());
 
             ImageView ivSelected = convertView.findViewById(R.id.iv_selected);
             ImageView savedimage = convertView.findViewById(R.id.saved_image);
             storage = FirebaseStorage.getInstance();
+            DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+            mRootRef.child(date).child("URL").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.getValue(String.class) != null) {
+                        String text = dataSnapshot.getValue(String.class);
+                        Glide.with(context).load(text).into(savedimage);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
             storage.getReference().child(date).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    Glide.with(context).load(uri).into(savedimage);
+                    if(uri!=null) {
+                        Glide.with(context).load(uri).into(savedimage);
+                    }
                 }
             });
-            if(day.isSameDay(dateToday)){
+            if (day.isSameDay(dateToday)) {
                 ivSelected.setVisibility(View.VISIBLE);
-            }
-            else{
+            } else {
                 ivSelected.setVisibility(View.INVISIBLE);
             }
 
-            if(day.isInMonth()){
-                if((position%7 + 1) == Calendar.SUNDAY){
-                    tvDay.setTextColor(Color.RED);
-                }/*else if((position%7 + 1) == Calendar.SATURDAY){
+            if(savedimage.getDrawable() == null) {
+                if (day.isInMonth()) {
+                    if ((position % 7 + 1) == Calendar.SUNDAY) {
+                        tvDay.setTextColor(Color.RED);
+                    }/*else if((position%7 + 1) == Calendar.SATURDAY){
                     tvDay.setTextColor(Color.BLUE);
-                }*/else{
-                    tvDay.setTextColor(Color.BLACK);
+                }*/ else {
+                        tvDay.setTextColor(Color.BLACK);
+                    }
+                } else {
+                    tvDay.setTextColor(Color.GRAY);
                 }
-            }else{
-                tvDay.setTextColor(Color.GRAY);
             }
         }
         convertView.setTag(day);

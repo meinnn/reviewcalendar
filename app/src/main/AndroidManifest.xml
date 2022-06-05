@@ -12,6 +12,7 @@
         android:theme="@style/Theme.ReviewCalendar">
         <activity
             android:name=".write_review"
+            android:parentActivityName=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".SearchForm"

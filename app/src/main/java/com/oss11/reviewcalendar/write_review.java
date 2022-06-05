@@ -46,7 +46,6 @@ public class write_review extends AppCompatActivity {
     RatingBar ratingbar;
     float rate;
     Button deleteButton;
-    Button Backspace;
     String URL;
     boolean Button1Flag;
     boolean Button2Flag;
@@ -69,21 +68,23 @@ public class write_review extends AppCompatActivity {
         EditText_with = (EditText) findViewById(R.id.editText4);
         EditText_review = (EditText) findViewById(R.id.editText5);
         saveButton = (Button) findViewById(R.id.button5);
+        ratingbar= (RatingBar) findViewById(R.id.ratingbar);
         date = sub_date.substring(0, 10);
+        deleteButton = (Button) findViewById(R.id.button4) ;
         imageView = findViewById(R.id.imageView3);
         storage = FirebaseStorage.getInstance();
-        storage.getReference().child(date).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(write_review.this).load(uri).into(imageView);
-            }
-        });
+
+        if(URL == null) {
+            storage.getReference().child(date).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(write_review.this).load(uri).into(imageView);
+                }
+            });
+        }
 
         if (Button1Flag == true) {
             Glide.with(this).load(URL).into(imageView);
-            Uri file = Uri.parse(URL);
-            StorageReference storageRef = storage.getReference();
-            UploadTask uploadTask = storageRef.child(date).putFile(file);
         }
 
         if (Button2Flag == true) {
@@ -97,32 +98,31 @@ public class write_review extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(Button2Flag == true) {
-            if (requestCode == REQUEST_CODE) {
-                if (resultCode == RESULT_OK) {
-                    Uri file = data.getData();
-                    StorageReference storageRef = storage.getReference();
-                    UploadTask uploadTask = storageRef.child(date).putFile(file);
-                    try {
-                        InputStream in = getContentResolver().openInputStream(data.getData());
-                        Bitmap img = BitmapFactory.decodeStream(in);
-                        in.close();
-                        imageView.setImageBitmap(img);
-                    } catch (Exception e) {
-                    }
-                } else if (resultCode == RESULT_CANCELED) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Uri file = data.getData();
+                StorageReference storageRef = storage.getReference();
+                UploadTask uploadTask = storageRef.child(date).putFile(file);
+                URL=null;//스토리지에 파일 저장
+                try {
+                    InputStream in = getContentResolver().openInputStream(data.getData());
+
+                    Bitmap img = BitmapFactory.decodeStream(in);
+                    in.close();
+
+                    imageView.setImageBitmap(img);
+                } catch (Exception e) {
+
                 }
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "취소", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    /*@Override
+    @Override
     protected void onStart() {
-        super.onStart();// date 값이 사용자가 클릭한 날짜값이므로 각각의 날짜를 제목으로 하는 테이블 생성,
-        // 그 후 테이블 안의 키값인 title, date, place, with, review에 입력한 값 저장
-
-
-        EditText_date.setText(date);
+        super.onStart();
 
         ratingbar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {//별점 클릭시 해당 값 파이어베이스에 저장
             @Override
@@ -131,30 +131,48 @@ public class write_review extends AppCompatActivity {
                 rate=rating;
             }
         });
-
-        mRootRef.child(date).child("rating").addValueEventListener(new ValueEventListener() {//파이어베이스에 저장된 별점 값
+        mRootRef.child(date).child("rating").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                float rating=dataSnapshot.getValue(float.class);
-                ratingbar.setRating(rating);
+                if(dataSnapshot.getValue(float.class) != null) {
+                    float rating = dataSnapshot.getValue(float.class);
+                    ratingbar.setRating(rating);
+                }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
+        mRootRef.child(date).child("URL").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue(String.class) != null) {
+                    String text = dataSnapshot.getValue(String.class);
+                    Glide.with(write_review.this).load(text).into(imageView);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
         mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String text = dataSnapshot.getValue(String.class);
                 EditText_title.setText(text);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+            }
+        });
+        mRootRef.child(date).child("date").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String text = dataSnapshot.getValue(String.class);
+                EditText_date.setText(text);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
         mRootRef.child(date).child("place").addValueEventListener(new ValueEventListener() {
@@ -163,10 +181,8 @@ public class write_review extends AppCompatActivity {
                 String text = dataSnapshot.getValue(String.class);
                 EditText_place.setText(text);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
         mRootRef.child(date).child("with").addValueEventListener(new ValueEventListener() {
@@ -175,11 +191,8 @@ public class write_review extends AppCompatActivity {
                 String text = dataSnapshot.getValue(String.class);
                 EditText_with.setText(text);
             }
-
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
         mRootRef.child(date).child("review").addValueEventListener(new ValueEventListener() {
@@ -188,21 +201,18 @@ public class write_review extends AppCompatActivity {
                 String text = dataSnapshot.getValue(String.class);
                 EditText_review.setText(text);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
-
-        saveButton.setOnClickListener(new View.OnClickListener() {// 수정 버튼을 누를 시 파이어베이스의 각 키 값에 데이터가 저장됨
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ReviewDTO reviewDTO=new ReviewDTO(EditText_title.getText().toString(), date
-                        ,EditText_place.getText().toString(), EditText_with.getText().toString(),EditText_review.getText().toString(),rate);
-
-
+                ReviewDTO reviewDTO = new ReviewDTO(EditText_title.getText().toString(), date
+                        , EditText_place.getText().toString(), EditText_with.getText().toString()
+                        , EditText_review.getText().toString(), URL, rate);
                 mRootRef.child(date).setValue(reviewDTO);
+                Toast.makeText(write_review.this, "저장 완료", Toast.LENGTH_LONG).show();
             }
         });
         deleteButton.setOnClickListener(new View.OnClickListener() {//삭제 버튼
@@ -212,85 +222,8 @@ public class write_review extends AppCompatActivity {
                 EditText_with.setText("");
                 EditText_place.setText("");
                 EditText_title.setText("");
-            }
-        });
-    }
-}*/
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-
-        mRootRef.child(date).child("title").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                EditText_title.setText(text);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mRootRef.child(date).child("date").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                EditText_date.setText(text);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mRootRef.child(date).child("place").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                EditText_place.setText(text);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mRootRef.child(date).child("with").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                EditText_with.setText(text);
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        mRootRef.child(date).child("review").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                EditText_review.setText(text);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ReviewDTO reviewDTO = new ReviewDTO(EditText_title.getText().toString(), date
-                        , EditText_place.getText().toString(), EditText_with.getText().toString(), EditText_review.getText().toString());
-
-
-                mRootRef.child(date).setValue(reviewDTO);
+                URL=null;
+                rate = 3;
             }
         });
     }

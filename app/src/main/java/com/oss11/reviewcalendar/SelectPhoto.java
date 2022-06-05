@@ -44,6 +44,7 @@ public class SelectPhoto extends DialogFragment {
         Button button = dialog.findViewById(R.id.button);
         Button button2 = dialog.findViewById(R.id.button2);
         Button button3 = dialog.findViewById(R.id.button3);
+        Button button4 = dialog.findViewById(R.id.button4);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +65,14 @@ public class SelectPhoto extends DialogFragment {
                 intent2.putExtra("button2",true);
                 intent2.putExtra("selectedDate",bundle.getString("selectedDate"));
                 startActivity(intent2);
+            }
+        });
+        button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentT = new Intent(getActivity(), write_review.class);
+                intentT.putExtra("selectedDate",bundle.getString("selectedDate"));
+                startActivity(intentT);
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {

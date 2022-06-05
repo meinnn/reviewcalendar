@@ -1,6 +1,7 @@
 package com.oss11.reviewcalendar;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,15 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,12 +33,14 @@ import java.util.TimeZone;
 public class MyGridViewCalendar extends Fragment {
     private TextView tvCalendarTitle;
     private GridView gvCalendar;
+    private FirebaseStorage storage;
 
     private ArrayList<com.oss11.reviewcalendar.DayInfo> arrayListDayInfo;
     Calendar mThisMonthCalendar;
     CalendarAdapter mCalendarAdapter;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd(EEE)", Locale.getDefault());
     Date selectedDate;
+
 
     public void setSelectedDate(Date date){
         selectedDate = date;
@@ -74,14 +86,13 @@ public class MyGridViewCalendar extends Fragment {
 
                 mCalendarAdapter.notifyDataSetChanged();
 
-                SelectPhoto selectPhoto = new SelectPhoto();
+                Bundle bundle = new Bundle();
+                bundle.putString("selectedDate", mCalendarAdapter.selectedDate.toString());
 
-                Bundle bundle=new Bundle();
-                bundle.putString("selectedDate",mCalendarAdapter.selectedDate.toString());
-                selectPhoto.setArguments(bundle);
+                    SelectPhoto selectPhoto = new SelectPhoto();
+                    selectPhoto.setArguments(bundle);
 
-                selectPhoto.show(getActivity().getSupportFragmentManager(), "select_photo");
-
+                    selectPhoto.show(getActivity().getSupportFragmentManager(), "select_photo");
             }
         });
 
