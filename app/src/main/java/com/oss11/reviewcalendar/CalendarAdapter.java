@@ -1,12 +1,19 @@
 package com.oss11.reviewcalendar;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,12 +23,15 @@ public class CalendarAdapter extends BaseAdapter {
     private ArrayList<com.oss11.reviewcalendar.DayInfo> arrayListDayInfo;
     public Date selectedDate;
     public Date dateToday;
+    private Context context;
+    private FirebaseStorage storage;
 
 
-    public CalendarAdapter(ArrayList<com.oss11.reviewcalendar.DayInfo> arrayLIstDayInfo, Date date) {
+    public CalendarAdapter(ArrayList<com.oss11.reviewcalendar.DayInfo> arrayLIstDayInfo, Date date, Context context) {
         this.arrayListDayInfo = arrayLIstDayInfo;
         this.selectedDate = date;
         this.dateToday = Calendar.getInstance().getTime();
+        this.context = context;
     }
 
     @Override
@@ -44,6 +54,7 @@ public class CalendarAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         com.oss11.reviewcalendar.DayInfo day = arrayListDayInfo.get(position);
+        String date = arrayListDayInfo.get(position).getDate().toString().substring(0, 10);
 
         if(convertView == null) {
             convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.day, parent, false);
@@ -54,9 +65,18 @@ public class CalendarAdapter extends BaseAdapter {
             tvDay.setText(day.getDay());
 
             ImageView ivSelected = convertView.findViewById(R.id.iv_selected);
+            ImageView savedimage = convertView.findViewById(R.id.saved_image);
+            storage = FirebaseStorage.getInstance();
+            storage.getReference().child(date).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context).load(uri).into(savedimage);
+                }
+            });
             if(day.isSameDay(dateToday)){
                 ivSelected.setVisibility(View.VISIBLE);
-            }else{
+            }
+            else{
                 ivSelected.setVisibility(View.INVISIBLE);
             }
 

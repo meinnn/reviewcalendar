@@ -52,6 +52,7 @@ public class SelectPhoto extends DialogFragment {
                 String keyword = searchText.getText().toString();
 
                 Intent intentS = new Intent(getActivity(), SearchForm.class);
+                intentS.putExtra("selectedDate",bundle.getString("selectedDate"));
                 intentS.putExtra("keyword", keyword);
                 startActivity(intentS);
             }
@@ -60,15 +61,9 @@ public class SelectPhoto extends DialogFragment {
             @Override
             public void onClick(View view) {
                 Intent intent2 = new Intent(getActivity(), write_review.class);
+                intent2.putExtra("button2",true);
                 intent2.putExtra("selectedDate",bundle.getString("selectedDate"));
                 startActivity(intent2);
-
-                /*
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent, REQUEST_CODE);
-                 */
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {

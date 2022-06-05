@@ -149,7 +149,7 @@ public class MyGridViewCalendar extends Fragment {
             calendar.add(Calendar.DATE, +1);
         }
 
-        mCalendarAdapter = new CalendarAdapter(arrayListDayInfo, selectedDate);
+        mCalendarAdapter = new CalendarAdapter(arrayListDayInfo, selectedDate, getActivity());
         gvCalendar.setAdapter(mCalendarAdapter);
 
     }
